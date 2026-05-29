@@ -1,0 +1,24 @@
+name: Hybrid tests pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build --no-cache -t tests .
+
+
+      - name: Run tests
+        run: docker run --name test-run tests
+
+      - name: Cleanup
+        if: always()
+        run: docker rm test-run
